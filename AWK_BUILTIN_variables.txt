@@ -1,0 +1,242 @@
+NR
+
+It represents the number of the current record. 
+For instance, the following example prints the record if 
+the current record number is less than three.
+
+Example
+
+ $ echo -e "One\n One Two\n One Two Three\n One Two Three Four" | awk 'NR > 2'
+On executing this code, you get the following result −
+
+Output
+
+One Two
+One Two Three
+
+
+FNR
+
+It is similar to NR, but relative to the current file. It is useful when AWK is operating on multiple files. Value of FNR resets with new file.
+
+OFMT
+
+It represents the output format number and its default value is %.6g.
+
+Example
+
+ $ awk 'BEGIN {print "OFMT = " OFMT}'
+On executing this code, you get the following result −
+
+Output
+
+OFMT = %.6g
+OFS
+
+It represents the output field separator and its default value is space.
+
+Example
+
+ $ awk 'BEGIN {print "OFS = " OFS}' | cat -vte
+On executing this code, you get the following result −
+
+Output
+
+OFS =  $
+ORS
+
+It represents the output record separator and its default value is newline.
+
+Example
+
+ $ awk 'BEGIN {print "ORS = " ORS}' | cat -vte
+On executing the above code, you get the following result −
+
+Output
+
+ORS = $
+$
+RLENGTH
+
+It represents the length of the string matched by match function. AWK's match function searches for a given string in the input-string.
+
+Example
+
+ $ awk 'BEGIN { if (match("One Two Three", "re")) { print RLENGTH } }'
+On executing this code, you get the following result −
+
+Output
+
+2
+RS
+
+It represents (input) record separator and its default value is newline.
+
+Example
+
+ $ awk 'BEGIN {print "RS = " RS}' | cat -vte
+On executing this code, you get the following result −
+
+Output
+
+RS = $
+$
+RSTART
+
+It represents the first position in the string matched by match function.
+
+Example
+
+ $ awk 'BEGIN { if (match("One Two Three", "Thre")) { print RSTART } }'
+On executing this code, you get the following result −
+
+Output
+
+9
+SUBSEP
+
+It represents the separator character for array subscripts and its default value is \034.
+
+Example
+
+ $ awk 'BEGIN { print "SUBSEP = " SUBSEP }' | cat -vte
+On executing this code, you get the following result −
+
+Output
+
+SUBSEP = ^\$
+$0
+
+It represents the entire input record.
+
+Example
+
+ $ awk '{print $0}' marks.txt
+On executing this code, you get the following result −
+
+Output
+
+1) Amit     Physics   80
+2) Rahul    Maths     90
+3) Shyam    Biology   87
+4) Kedar    English   85
+5) Hari     History   89
+$n
+
+It represents the nth field in the current record where the fields are separated by FS.
+
+Example
+
+ $ awk '{print $3 "\t" $4}' marks.txt
+On executing this code, you get the following result −
+
+Output
+
+Physics   80
+Maths     90
+Biology   87
+English   85
+History   89
+GNU AWK Specific Variables
+GNU AWK specific variables are as follows −
+
+ARGIND
+
+It represents the index in ARGV of the current file being processed.
+
+Example
+
+ $ awk '{ 
+   print "ARGIND   = ", ARGIND; print "Filename = ", ARGV[ARGIND] 
+}' junk1 junk2 junk3
+On executing this code, you get the following result −
+
+Output
+
+ARGIND   =  1
+Filename =  junk1
+ARGIND   =  2
+Filename =  junk2
+ARGIND   =  3
+Filename =  junk3
+BINMODE
+
+It is used to specify binary mode for all file I/O on non-POSIX systems. 
+Numeric values of 1, 2, or 3 specify that input files, output files, or all files, respectively, should use binary I/O. String values of r or w specify that input files or output files, respectively, should use binary I/O. String values of rw or wr specify that all files should use binary I/O.
+
+ERRNO
+
+A string indicates an error when a redirection fails for getline or if close call fails.
+
+Example
+
+ $ awk 'BEGIN { ret = getline < "junk.txt"; if (ret == -1) print "Error:", ERRNO }'
+On executing this code, you get the following result −
+
+Output
+
+Error: No such file or directory
+
+FIELDWIDTHS
+
+A space separated list of field widths variable is set, GAWK parses 
+the input into fields of fixed width, instead of using the value of the FS variable
+ as the field separator.
+
+IGNORECASE
+
+When this variable is set, GAWK becomes case-insensitive. 
+The following example demonstrates this −
+
+Example
+
+ $ awk 'BEGIN{IGNORECASE = 1} /amit/' marks.txt
+On executing this code, you get the following result −
+
+Output
+
+1) Amit  Physics   80
+
+LINT
+
+It provides dynamic control of the --lint option from the GAWK program.
+ When this variable is set, GAWK prints lint warnings. 
+When assigned the string value fatal, lint warnings become fatal errors, 
+exactly like --lint=fatal.
+
+Example
+
+ $ awk 'BEGIN {LINT = 1; a}'
+On executing this code, you get the following result −
+
+Output
+
+awk: cmd. line:1: warning: reference to uninitialized variable `a'
+awk: cmd. line:1: warning: statement has no effect
+
+PROCINFO
+
+This is an associative array containing information about the process, such as real and effective UID numbers, process ID number, and so on.
+
+Example
+
+ $ awk 'BEGIN { print PROCINFO["pid"] }'
+On executing this code, you get the following result −
+
+Output
+
+4316
+TEXTDOMAIN
+
+It represents the text domain of the AWK program. 
+It is used to find the localized translations for the program's strings.
+
+Example
+
+ $ awk 'BEGIN { print TEXTDOMAIN }'
+On executing this code, you get the following result −
+
+Output
+
+messages
+The above output shows English text due to en_IN locale

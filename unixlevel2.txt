@@ -1,0 +1,842 @@
+A pipe is a facility of the shell that makes it very easy to chain together multiple commands. A pipe is called upon with the vertical bar character (|). When used between two Unix commands, it means that output from the first command should become the input to the second command. For example, to count how many files underneath a directory have been modified in the last day, the find and wc commands may be used along with a pipe (Finding Files, Counting with wc). The find command will list the modified files and wc can count them:
+
+find . -type f -mtime -1 | wc -l
+
+
+When a program takes its input from another program, it performs some operation on that input, and writes the result to the standard output. It is referred to as a filter.
+
+The grep Command
+The grep command searches a file or files for lines that have a certain pattern. The syntax is −
+
+$grep pattern file(s)
+The name "grep" comes from the ed (a Unix line editor) command g/re/p which means “globally search for a regular expression and print all lines containing it”.
+
+A regular expression is either some plain text (a word, for example) and/or special characters used for pattern matching.
+
+The simplest use of grep is to look for a pattern consisting of a single word. It can be used in a pipe so that only those lines of the input files containing a given string are sent to the standard output. If you don't give grep a filename to read, it reads its standard input; that's the way all filter programs work −
+
+
+$ls -l | grep "Aug"
+-rw-rw-rw-   1 john  doc     11008 Aug  6 14:10 ch02
+-rw-rw-rw-   1 john  doc      8515 Aug  6 15:30 ch07
+-rw-rw-r--   1 john  doc      2488 Aug 15 10:51 intro
+-rw-rw-r--   1 carol doc      1605 Aug 23 07:35 macros
+$
+
+
+The Unix sort command is a simple command that can be used to rearrange the contents of text files line by line.
+
+The command is a filter command that sorts the input text and prints the result to stdout. By default, sorting is done line by line, starting from the first character.
+
+Numbers are sorted to be ahead of letters.
+Lowercase letters are sorted to be ahead of uppercase letters.
+
+
+Sort Syntax:
+
+sort [options] [files]
+
+Some of the options supported are:
+
+sort -b: Ignore blanks at the start of the line.
+sort -r: Reverse the sorting order.
+sort -o: Specify the output file.
+sort -n: Use the numerical value to sort.
+sort -M: Sort as per the calendar month specified.
+sort -u: Suppress lines that repeat an earlier key.
+sort -k POS1, POS2: Specify a key to do the sorting. POS1 and POS2 are optional parameters and are used to indicate the starting field and the ending field indices. Without POS2, only the field specified by POS1 is used. Each POS is specified as “F.C” where F represents the field index, and C represents the character index from the start of the field.
+sort -t SEP: Use the provided separator to identify the fields.
+With the “-k” option, the sort command can be used to sort flat file databases. Without the “-k” option, the sorting is performed using the entire line. The default separator for fields is the space character. The -t option can be used to change the separator.
+
+
+
+More than two commands may be linked up into a pipe. Taking a previous pipe example using grep, we can further sort the files modified in August by the order of size.
+
+The following pipe consists of the commands ls, grep, and sort −
+
+$ls -l | grep "Aug" | sort +4n
+-rw-rw-r--  1 carol doc      1605 Aug 23 07:35 macros
+-rw-rw-r--  1 john  doc      2488 Aug 15 10:51 intro
+-rw-rw-rw-  1 john  doc      8515 Aug  6 15:30 ch07
+-rw-rw-rw-  1 john  doc     11008 Aug  6 14:10 ch02
+$
+
+
+This pipe sorts all files in your directory modified in August by the order of size, and prints them on the terminal screen. The sort option +4n skips four fields (fields are separated by blanks) then sorts the lines in numeric order
+
+The pg and more Commands
+A long output can normally be zipped by you on the screen, but if you run text through more or use the pg command as a filter; the display stops once the screen is full of text.
+
+Let's assume that you have a long directory listing. To make it easier to read the sorted listing, pipe the output through more as follows −
+
+$ls -l | grep "Aug" | sort +4n | more
+-rw-rw-r--  1 carol doc      1605 Aug 23 07:35 macros
+-rw-rw-r--  1 john  doc      2488 Aug 15 10:51 intro
+-rw-rw-rw-  1 john  doc      8515 Aug  6 15:30 ch07
+-rw-rw-r--  1 john  doc     14827 Aug  9 12:40 ch03
+	.
+	.
+	.
+-rw-rw-rw-  1 john  doc     16867 Aug  6 15:56 ch05
+--More--(74%)
+The screen will fill up once the screen is full of text consisting of lines sorted by the order of the file size. At the bottom of the screen is the more prompt, where you can type a command to move through the sorted text.
+
+
+Regular expression is a string that can be used to describe several sequences of characters. 
+Regular expressions can be used with text processing commands like vi, grep, sed, awk, and others. Note that although some regular-expression patterns look similar to filename-matching patterns – the two are unrelated.
+
+#1) ‘^’ – anchor character for start of line:
+
+If the carat is the first character in an expression, it anchors the remainder of the expression to the start of the line.
+
+Example1: Match all lines that start with ‘A’. g. “A plane”
+Pattern: ‘^A’
+Example2: Match all lines that start with ‘hello’. g. “hello there”
+$ grep “^hello” file1
+
+
+#2) ‘$’ – anchor character for end of line:
+
+If the carat is the last character in an expression, it anchors the remainder of the expression to the end of the line.
+
+Example1: Match all lines that end with ‘Z’. g. “The BUZZ”
+Pattern: ‘Z$’
+Example2: Match all lines that end with ‘done’. g. “well done”
+$ grep “done$” file1
+#3) ‘.’ – any single character:
+
+The ‘.’ character matches any character except the end-of-line.
+
+Example1: Match all lines that contain a single character. g. “a”
+Pattern: ‘^.$’
+Example2: Match all lines that end with ‘done’. g. “well done”
+$ grep “done$” file1
+
+4) ‘[’ range ‘]’ – a range of characters:
+
+This pattern matches the set of characters specified between the square brackets.
+
+Example1: Match all lines that contain a single digit. g. “8”
+Pattern: ‘^[0-9]$’
+Example2: Match all lines that contain any of the letters ‘a’, ‘b’, ‘c’, ‘d’ or ‘e’
+$ grep “[abcde]”
+Example3: Match all lines that contain any of the letters ‘a’, ‘b’, ‘c’, ‘d’ or ‘e’.
+$ grep “[a-e]” file1
+#5) ‘[^’ range ‘]’ – a range of characters to be excluded:
+
+This pattern matches any pattern except the set of characters specified between the square brackets.
+
+Example1: Match all lines that do not contain a digit. g. “hello”
+Pattern: ‘[^0-9]’
+Example2: Match all lines that do not contain a vowel
+$ grep “[^aeiou]” file1
+
+
+6) ‘*’ – ‘zero or more’ modifier:
+
+This modifier matches with zero or more instances of the preceding character-set.
+
+Example1: Match all lines that contain ‘ha’ followed by zero or more instances of ‘p’ and then followed by ‘y’. g. “happpy” or “hay”
+Pattern: ‘hap*y’
+Example2: Match all lines that start with a digit following zero or more spaces E.g. “ ” or “2.”
+$ grep “ *[0-9]” file1
+#7) ‘?’ – ‘zero or one’ modifier:
+
+This modifier matches with zero or one instances of the preceding character-set.
+
+Example1: Match all lines that contain ‘hap’ followed by zero or one instances of ‘p’ and then followed by ‘y’. g. “hapy” or “happy”
+Pattern: ‘happ?y’
+Example2: Match all lines that start with a digit followed by zero or one ‘:’ characters E.g. “1” or “2:”
+$ grep “^[0-9]:?” file1
+
+
+
+There are several Unix utilities that help users compute in a networked, distributed environment. 
+
+The ping Utility
+The ping command sends an echo request to a host available on the network. Using this command, you can check if your remote host is responding well or not.
+
+The ping command is useful for the following −
+
+Tracking and isolating hardware and software problems.
+Determining the status of the network and various foreign hosts.
+Testing, measuring, and managing networks.
+Syntax
+
+Following is the simple syntax to use the ftp command −
+
+$ping hostname or ip-address
+The above command starts printing a response after every second. To come out of the command, you can terminate it by pressing CNTRL + C keys.
+
+
+Example
+
+Following is an example to check the availability of a host available on the network −
+
+$ping google.com
+PING google.com (74.125.67.100) 56(84) bytes of data.
+64 bytes from 74.125.67.100: icmp_seq = 1 ttl = 54 time = 39.4 ms
+64 bytes from 74.125.67.100: icmp_seq = 2 ttl = 54 time = 39.9 ms
+64 bytes from 74.125.67.100: icmp_seq = 3 ttl = 54 time = 39.3 ms
+64 bytes from 74.125.67.100: icmp_seq = 4 ttl = 54 time = 39.1 ms
+64 bytes from 74.125.67.100: icmp_seq = 5 ttl = 54 time = 38.8 ms
+--- google.com ping statistics ---
+22 packets transmitted, 22 received, 0% packet loss, time 21017ms
+rtt min/avg/max/mdev = 38.867/39.334/39.900/0.396 ms
+$
+If a host does not exist, you will receive the following output −
+
+$ping giiiiiigle.com
+ping: unknown host giiiiigle.com
+$
+
+
+The ftp Utility
+Here, ftp stands for File Transfer Protocol. This utility helps you upload and download your file from one computer to another computer.
+
+The ftp utility has its own set of Unix-like commands. These commands help you perform tasks such as −
+
+Connect and login to a remote host.
+
+Navigate directories.
+
+List directory contents.
+
+Put and get files.
+
+Transfer files as ascii, ebcdic or binary.
+
+Syntax
+
+Following is the simple syntax to use the ftp command −
+
+$ftp hostname or ip-address
+
+The above command would prompt you for the login ID and the password. Once you are authenticated, you can access the home directory of the login account and you would be able to perform various commands.
+
+Extended Binary Coded Decimal Interchange Code (EBCDIC; /ˈɛbsɪdɪk/) is an eight-bit character encoding used mainly on IBM mainframe and IBM midrange computer operating systems.
+
+
+The following tables lists out a few important commands −
+
+Sr.No.	Command & Description
+1	
+put filename
+
+Uploads filename from the local machine to the remote machine.
+
+2	
+get filename
+
+Downloads filename from the remote machine to the local machine.
+
+3	
+mput file list
+
+Uploads more than one file from the local machine to the remote machine.
+
+4	
+mget file list
+
+Downloads more than one file from the remote machine to the local machine.
+
+5	
+prompt off
+
+Turns the prompt off. By default, you will receive a prompt to upload or download files using mput or mget commands.
+
+6	
+prompt on
+
+Turns the prompt on.
+
+7	
+dir
+
+Lists all the files available in the current directory of the remote machine.
+
+8	
+cd dirname
+
+Changes directory to dirname on the remote machine.
+
+9	
+lcd dirname
+
+Changes directory to dirname on the local machine.
+
+10	
+quit
+
+Helps logout from the current login.
+
+
+The telnet Utility
+There are times when we are required to connect to a remote Unix machine and work on that machine remotely. Telnet is a utility that allows a computer user at one site to make a connection, login and then conduct work on a computer at another site.
+
+Once you login using Telnet, you can perform all the activities on your remotely connected machine. The following is an example of Telnet session −
+
+C:>telnet amrood.com
+Trying...
+Connected to amrood.com.
+Escape character is '^]'.
+
+login: amrood
+amrood's Password: 
+*****************************************************
+*                                                   *
+*                                                   *
+*    WELCOME TO AMROOD.COM                          *
+*                                                   *
+*                                                   *
+*****************************************************
+
+Last unsuccessful login: Fri Mar  3 12:01:09 IST 2009
+Last login: Wed Mar  8 18:33:27 IST 2009 on pts/10
+
+   {  do your work }
+
+$ logout
+Connection closed.
+C:>
+
+
+
+
+The finger Utility
+The finger command displays information about users on a given host. The host can be either local or remote.
+
+Finger may be disabled on other systems for security reasons.
+
+Following is the simple syntax to use the finger command −
+
+Check all the logged-in users on the local machine −
+
+$ finger
+Login     Name       Tty      Idle  Login Time   Office
+amrood               pts/0          Jun 25 08:03 (62.61.164.115)
+Get information about a specific user available on the local machine −
+
+$ finger amrood
+Login: amrood                           Name: (null)
+Directory: /home/amrood                 Shell: /bin/bash
+On since Thu Jun 25 08:03 (MST) on pts/0 from 62.61.164.115
+No mail.
+No Plan.
+
+
+Check all the logged-in users on the remote machine −
+
+$ finger @mysite.com
+Login     Name       Tty      Idle  Login Time   Office
+amrood               pts/0          Jun 25 08:03 (62.61.164.115)
+Get the information about a specific user available on the remote machine −
+
+$ finger user1@mysite.com
+Login: user1                           Name: (null)
+Directory: /home/user1                 Shell: /bin/bash
+On since Thu Jun 25 08:03 (MST) on pts/0 from 62.61.164.115
+No mail.
+No Plan.
+
+
+When you execute a program on your Unix system, the system creates a special environment for that program. This environment contains everything needed for the system to run the program as if no other program were running on the system.
+
+Whenever you issue a command in Unix, it creates, or starts, a new process. When you tried out the ls command to list the directory contents, you started a process. A process, in simple terms, is an instance of a running program.
+
+The operating system tracks processes through a five-digit ID number known as the pid or the process ID. Each process in the system has a unique pid.
+
+Pids eventually repeat because all the possible numbers are used up and the next pid rolls or starts over. At any point of time, no two processes with the same pid exist in the system because it is the pid that Unix uses to track each process.
+
+Starting a Process
+When you start a process (run a command), there are two ways you can run it −
+
+Foreground Processes
+Background Processes
+Foreground Processes
+
+By default, every process that you start runs in the foreground. It gets its input from the keyboard and sends its output to the screen.
+
+You can see this happen with the ls command. If you wish to list all the files in your current directory, you can use the following command −
+
+$ls ch*.doc
+This would display all the files, the names of which start with ch and end with .doc −
+
+ch01-1.doc   ch010.doc  ch02.doc    ch03-2.doc 
+ch04-1.doc   ch040.doc  ch05.doc    ch06-2.doc
+ch01-2.doc   ch02-1.doc
+The process runs in the foreground, the output is directed to my screen, and if the ls command wants any input (which it does not), it waits for it from the keyboard.
+
+While a program is running in the foreground and is time-consuming, no other commands can be run (start any other processes) because the prompt would not be available until the program finishes processing and comes out.
+
+Background Processes
+
+A background process runs without being connected to your keyboard. If the background process requires any keyboard input, it waits.
+
+The advantage of running a process in the background is that you can run other commands; you do not have to wait until it completes to start another!
+
+The simplest way to start a background process is to add an ampersand (&) at the end of the command.
+
+$ls ch*.doc &
+This displays all those files the names of which start with ch and end with .doc −
+
+
+
+Listing Running Processes
+It is easy to see your own processes by running the ps (process status) command as follows −
+
+$ps
+PID       TTY      TIME        CMD
+18358     ttyp3    00:00:00    sh
+18361     ttyp3    00:01:31    abiword
+18789     ttyp3    00:00:00    ps
+One of the most commonly used flags for ps is the -f ( f for full) option, which provides more information as shown in the following example −
+
+$ps -f
+UID      PID  PPID C STIME    TTY   TIME CMD
+amrood   6738 3662 0 10:23:03 pts/6 0:00 first_one
+amrood   6739 3662 0 10:22:54 pts/6 0:00 second_one
+amrood   3662 3657 0 08:10:53 pts/6 0:00 -ksh
+amrood   6892 3662 4 10:51:50 pts/6 0:00 ps -f
+
+
+
+the description of all the fields displayed by ps -f command −
+
+Sr.No.	Column & Description
+1	
+UID
+
+User ID that this process belongs to (the person running it)
+
+2	
+PID
+
+Process ID
+
+3	
+PPID
+
+Parent process ID (the ID of the process that started it)
+
+4	
+C
+
+CPU utilization of process
+
+5	
+STIME
+
+Process start time
+
+6	
+TTY
+
+Terminal type associated with the process
+
+7	
+TIME
+
+CPU time taken by the process
+
+8	
+CMD
+
+The command that started this process
+
+There are other options which can be used along with ps command −
+
+Sr.No.	Option & Description
+1	
+-a
+
+Shows information about all users
+
+2	
+-x
+
+Shows information about processes without terminals
+
+3	
+-u
+
+Shows additional information like -f option
+
+4	
+-e
+
+Displays extended information
+
+
+
+few free tools that are available to monitor and manage performance on Unix systems. These tools also provide guidelines on how to diagnose and fix performance problems in the Unix environment.
+
+Unix has following major resource types that need to be monitored and tuned −
+
+CPU
+
+Memory
+
+Disk space
+
+Communications lines
+
+I/O Time
+
+Network Time
+
+Applications programs
+
+
+
+Unix provides following important tools to measure and fine tune Unix system performance
+
+nice/renice: Runs a program with modified scheduling priority
+
+netstat: Prints network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
+
+time: Helps time a simple command or give resource usage
+
+uptime: This is System Load Average
+
+ps: Reports a snapshot of the current processes
+
+vmstat: Reports virtual memory statistics
+
+gprof: Displays call graph profile data
+
+prof: Facilitates Process Profiling
+
+top: Displays system tasks
+
+
+
+
+There are three types of accounts on a Unix system −
+
+Root account
+
+This is also called superuser and would have complete and unfettered control of the system. A superuser can run any commands without any restriction. This user should be assumed as a system administrator.
+
+System accounts
+
+System accounts are those needed for the operation of system-specific components for example mail accounts and the sshd accounts. These accounts are usually needed for some specific function on your system, and any modifications to them could adversely affect the system.
+
+User accounts
+
+User accounts provide interactive access to the system for users and groups of users. General users are typically assigned to these accounts and usually have limited access to critical system files and directories.
+
+
+
+Unix supports a concept of Group Account which logically groups a number of accounts. Every account would be a part of another group account. A Unix group plays important role in handling file permissions and process management.
+
+Managing Users and Groups
+There are four main user administration files −
+
+/etc/passwd − Keeps the user account and password information. This file holds the majority of information about accounts on the Unix system.
+
+/etc/shadow − Holds the encrypted password of the corresponding account. Not all the systems support this file.
+
+/etc/group − This file contains the group information for each account.
+
+/etc/gshadow − This file contains secure group account information.
+
+Check all the above files using the cat command.
+
+
+
+Create a Group
+We will now understand how to create a group. For this, we need to create groups before creating any account otherwise, we can make use of the existing groups in our system. We have all the groups listed in /etc/groups file.
+
+All the default groups are system account specific groups and it is not recommended to use them for ordinary accounts. So, following is the syntax to create a new group account −
+
+ groupadd [-g gid [-o]] [-r] [-f] groupname
+
+
+
+
+-g GID: The numerical value of the group's ID
+
+
+-o This option permits to add group with non-unique GID
+
+
+-r This flag instructs groupadd to add a system account
+
+-f This option causes to just exit with success status, if the specified group already exists. With -g, if the specified GID already exists, other (unique) GID is chosen
+
+groupname Actual group name to be created
+
+
+
+Following example creates a developers group with default values, which is very much acceptable for most of the administrators.
+
+$ groupadd developers
+Modify a Group
+To modify a group, use the groupmod syntax −
+
+$ groupmod -n new_modified_group_name old_group_name
+To change the developers_2 group name to developer, type −
+
+$ groupmod -n developer developer_2
+Here is how you will change the financial GID to 545 −
+
+$ groupmod -g 545 developer
+Delete a Group
+We will now understand how to delete a group. To delete an existing group, all you need is the groupdel command and the group name. To delete the financial group, the command is −
+
+$ groupdel developer
+This removes only the group, not the files associated with that group. The files are still accessible by their owners.
+
+
+
+Create an Account
+Let us see how to create a new account on your Unix system. Following is the syntax to create a user's account −
+
+useradd -d homedir -g groupname -m -s shell -u userid accountname
+
+
+-d homedir - Specifies home directory for the account
+
+-g groupname - Specifies a group account for this account
+
+-m - Creates the home directory if it doesn't exist
+
+-s shell - Specifies the default shell for this account
+
+-u userid  - You can specify a user id for this account
+
+accountname - Actual account name to be created
+
+
+If you do not specify any parameter, then the system makes use of the default values. The useradd command modifies the /etc/passwd, /etc/shadow, and /etc/group files and creates a home directory.
+
+Following is the example that creates an account mcmohd, setting its home directory to /home/mcmohd and the group as developers. This user would have Korn Shell assigned to it.
+
+
+$ useradd -d /home/mcmohd -g developers -s /bin/ksh mcmohd
+Before issuing the above command, make sure you already have the developers group created using the groupadd command.
+
+Once an account is created you can set its password using the passwd command as follows −
+
+$ passwd mcmohd20
+Changing password for user mcmohd20.
+New UNIX password:
+Retype new UNIX password:
+passwd: all authentication tokens updated successfully.
+When you type passwd accountname, it gives you an option to change the password, provided you are a superuser. Otherwise, you can change just your password using the same command but without specifying your account name.
+
+
+Modify an Account
+The usermod command enables you to make changes to an existing account from the command line. It uses the same arguments as the useradd command, plus the -l argument, which allows you to change the account name.
+
+For example, to change the account name mcmohd to mcmohd20 and to change home directory accordingly, you will need to issue the following command −
+
+$ usermod -d /home/mcmohd20 -m -l mcmohd mcmohd20
+
+
+Delete an Account
+The userdel command can be used to delete an existing user. This is a very dangerous command if not used with caution.
+
+There is only one argument or option available for the command .r, for removing the account's home directory and mail file.
+
+For example, to remove account User1, issue the following command −
+
+$ userdel -r User1
+If you want to keep the home directory for backup purposes, omit the -r option. You can remove the home directory as needed at a later time.
+
+
+Unix systems have a very flexible and powerful logging system, which enables you to record almost anything you can imagine and then manipulate the logs to retrieve the information you require.
+
+Many versions of Unix provide a general-purpose logging facility called syslog. Individual programs that need to have information logged, send the information to syslog.
+
+Unix syslog is a host-configurable, uniform system logging facility. The system uses a centralized system logging process that runs the program /etc/syslogd or /etc/syslog.
+
+The operation of the system logger is quite straightforward. Programs send their log entries to syslogd, which consults the configuration file /etc/syslogd.conf or /etc/syslog and, when a match is found, writes the log message to the desired log file.
+
+
+Facility
+
+The identifier used to describe the application or process that submitted the log message. For example, mail, kernel, and ftp.
+
+
+
+Priority
+
+An indicator of the importance of the message. Levels are defined within syslog as guidelines, from debugging information to critical events.
+
+
+Selector
+
+A combination of one or more facilities and levels. When an incoming event matches a selector, an action is performed.
+
+
+
+Action
+
+What happens to an incoming message that matches a selector — Actions can write the message to a log file, echo the message to a console or other device, write the message to a logged in user, or send the message along to another syslog server.
+
+
+Logging Actions
+The action field specifies one of five actions −
+
+Log message to a file or a device. For example, /var/log/lpr.log or /dev/console.
+
+Send a message to a user. You can specify multiple usernames by separating them with commas; for example, root, amrood.
+
+Send a message to all users. In this case, the action field consists of an asterisk; for example, *.
+
+Pipe the message to a program. In this case, the program is specified after the Unix pipe symbol (|).
+
+Send the message to the syslog on another host. In this case, the action field consists of a hostname, preceded by an at sign; for example, @tutorialspoint.com.
+
+
+
+The logger Command
+Unix provides the logger command, which is an extremely useful command to deal with system logging. The logger command sends logging messages to the syslogd daemon, and consequently provokes system logging.
+
+This means we can check from the command line at any time the syslogd daemon and its configuration. The logger command provides a method for adding one-line entries to the system log file from the command line.
+
+The format of the command is −
+
+logger [-i] [-f file] [-p priority] [-t tag] [message]...
+
+
+Option & Description
+-f filename
+
+Uses the contents of file filename as the message to log.
+
+-i
+
+Logs the process ID of the logger process with each line.
+
+-p priority
+
+Enters the message with the specified priority (specified selector entry); the message priority can be specified numerically, or as a facility.priority pair. The default priority is user.notice.
+
+-t tag
+
+Marks each line added to the log with the specified tag.
+
+message
+
+The string arguments whose contents are concatenated together in the specified order, separated by the space.
+
+Signals are software interrupts sent to a program to indicate that an important event has occurred. The events can vary from user requests to illegal memory access errors. Some signals, such as the interrupt signal, indicate that a user has asked the program to do something that is not in the usual flow of control.
+
+
+common signals you might encounter and want to use in your programs 
+
+
+
+List of Signals
+There is an easy way to list down all the signals supported by your system. Just issue the kill -l command and it would display all the supported signals −
+
+$ kill -l
+ 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL
+ 5) SIGTRAP      6) SIGABRT      7) SIGBUS       8) SIGFPE
+ 9) SIGKILL     10) SIGUSR1     11) SIGSEGV     12) SIGUSR2
+13) SIGPIPE     14) SIGALRM     15) SIGTERM     16) SIGSTKFLT
+17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU
+25) SIGXFSZ     26) SIGVTALRM   27) SIGPROF     28) SIGWINCH
+29) SIGIO       30) SIGPWR      31) SIGSYS      34) SIGRTMIN
+35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3  38) SIGRTMIN+4
+39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12
+47) SIGRTMIN+13 48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14
+51) SIGRTMAX-13 52) SIGRTMAX-12 53) SIGRTMAX-11 54) SIGRTMAX-10
+55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7  58) SIGRTMAX-6
+59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+63) SIGRTMAX-1  64) SIGRTMAX
+
+Default Actions
+Every signal has a default action associated with it. The default action for a signal is the action that a script or program performs when it receives a signal.
+
+Some of the possible default actions are −
+
+Terminate the process.
+
+Ignore the signal.
+
+Dump core. This creates a file called core containing the memory image of the process when it received the signal.
+
+Stop the process.
+
+Continue a stopped process.
+
+
+Sending Signals
+There are several methods of delivering signals to a program or script. One of the most common is for a user to type CONTROL-C or the INTERRUPT key while a script is executing.
+
+When you press the Ctrl+C key, a SIGINT is sent to the script and as per defined default action script terminates.
+
+The other common method for delivering signals is to use the kill command, the syntax of which is as follows −
+
+$ kill -signal pid
+
+
+Here signal is either the number or name of the signal to deliver and pid is the process ID that the signal should be sent to. For Example −
+
+$ kill -1 1001
+The above command sends the HUP or hang-up signal to the program that is running with process ID 1001. To send a kill signal to the same process, use the following command −
+
+$ kill -9 1001
+This kills the process running with process ID 1001.
+
+
+
+Trapping Signals
+When you press the Ctrl+C or Break key at your terminal during execution of a shell program, normally that program is immediately terminated, and your command prompt returns. This may not always be desirable. For instance, you may end up leaving a bunch of temporary files that won't get cleaned up.
+
+Trapping these signals is quite easy, and the trap command has the following syntax −
+
+$ trap commands signals
+Here command can be any valid Unix command, or even a user-defined function, and signal can be a list of any number of signals you want to trap.
+
+There are two common uses for trap in shell scripts −
+
+Clean up temporary files
+Ignore signals
+
+
+Cleaning Up Temporary Files
+As an example of the trap command, the following shows how you can remove some files and then exit if someone tries to abort the program from the terminal −
+
+$ trap "rm -f $WORKDIR/work1$$ $WORKDIR/dataout$$; exit" 2
+
+
+
+From the point in the shell program that this trap is executed, the two files work1$$ and dataout$$ will be automatically removed if signal number 2 is received by the program.
+
+Hence, if the user interrupts the execution of the program after this trap is executed, you can be assured that these two files will be cleaned up. The exit command that follows the rm is necessary because without it, the execution would continue in the program at the point that it left off when the signal was received.
+
+Signal number 1 is generated for hangup. Either someone intentionally hangs up the line or the line gets accidentally disconnected.
+
+You can modify the preceding trap to also remove the two specified files in this case by adding signal number 1 to the list of signals −
+
+$ trap "rm $WORKDIR/work1$$ $WORKDIR/dataout$$; exit" 1 2
+Now these files will be removed if the line gets hung up or if the Ctrl+C key gets pressed.
+
+The commands specified to trap must be enclosed in quotes, if they contain more than one command. Also note that the shell scans the command line at the time that the trap command gets executed and also when one of the listed signals is received.
+
+Thus, in the preceding example, the value of WORKDIR and $$ will be substituted at the time that the trap command is executed. If you wanted this substitution to occur at the time that either signal 1 or 2 was received, you can put the commands inside single quotes −
+
+$ trap 'rm $WORKDIR/work1$$ $WORKDIR/dataout$$; exit' 1 2
+
+
+
+
+
+Ignoring Signals
+If the command listed for trap is null, the specified signal will be ignored when received. For example, the command −
+
+$ trap '' 2
+This specifies that the interrupt signal is to be ignored. You might want to ignore certain signals when performing an operation that you don't want to be interrupted. You can specify multiple signals to be ignored as follows −
+
+$ trap '' 1 2 3 15
+Note that the first argument must be specified for a signal to be ignored and is not equivalent to writing the following, which has a separate meaning of its own −
+
+$ trap  2
+If you ignore a signal, all subshells also ignore that signal. However, if you specify an action to be taken on the receipt of a signal, all subshells will still take the default action on receipt of that signal.

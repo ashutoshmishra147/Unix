@@ -1,0 +1,123 @@
+In awk, regular expressions (regex) allow for dynamic and complex pattern definitions. 
+You're not limited to searching for simple strings but also patterns within patterns.
+
+The syntax for using regular expressions to match lines in awk is:
+
+word ~ /match/
+The inverse of that is not matching a pattern:
+
+word !~ /match/
+If you haven't already, create the sample file from our previous article:
+
+name       color  amount
+apple      red    4
+banana     yellow 6
+strawberry red    3
+raspberry  red    99
+grape      purple 10
+apple      green  8
+plum       purple 2
+kiwi       brown  4
+potato     brown  9
+pineapple  yellow 5
+Save the file as colours.txt and run:
+
+$ awk -e '$1 ~ /p[el]/ {print $0}' colours.txt
+apple      red    4
+grape      purple 10
+apple      green  8
+plum       purple 2
+pineapple  yellow 5
+You have selected all records containing the letter p followed by either an e or an l.
+
+Adding an o inside the square brackets creates a new pattern to match:
+
+$ awk -e '$1 ~ /p[o]/ {print $0}' colours.txt
+apple      red    4
+grape      purple 10
+apple      green  8
+plum       purple 2
+pineapple  yellow 5
+potato     brown  9
+Regular expression basics
+Certain characters have special meanings when they're used in regular expressions.
+
+Anchors
+Anchor	Function
+^	Indicates the beginning of the line
+$	Indicates the end of a line
+\A	Denotes the beginning of a string
+\z	Denotes the end of a string
+\b	Marks a word boundary
+For example, this awk command prints any record containing an r character:
+
+$ awk -e '$1 ~ /r/ {print $0}' colours.txt
+strawberry red    3
+raspberry  red    99
+grape      purple 10
+Add a ^ symbol to select only records where r occurs at the beginning of the line:
+
+$ awk -e '$1 ~ /^r/ {print $0}' colours.txt
+raspberry  red    99
+Characters
+Character	Function
+[ad]	Selects a or d
+[a-d]	Selects any character a through d (a, b, c, or d)
+[^a-d]	Selects any character except a through d (e, f, g, h…)
+\w	Selects any word
+\s	Selects any whitespace character
+\d	Selects any digit
+The capital versions of w, s, and d are negations; for example, \D does not select any digit.
+
+POSIX regex offers easy mnemonics for character classes:
+
+POSIX mnemonic	Function
+[:alnum:]	Alphanumeric characters
+[:alpha:]	Alphabetic characters
+[:space:]	Space characters (such as space, tab, and formfeed)
+[:blank:]	Space and tab characters
+[:upper:]	Uppercase alphabetic characters
+[:lower:]	Lowercase alphabetic characters
+[:digit:]	Numeric characters
+[:xdigit:]	Characters that are hexadecimal digits
+[:punct:]	Punctuation characters (i.e., characters that are not letters, digits, control characters, or space characters)
+[:cntrl:]	Control characters
+[:graph:]	Characters that are both printable and visible (e.g., a space is printable but not visible, whereas an a is both)
+[:print:]	Printable characters (i.e., characters that are not control characters)
+
+Quantifiers
+
+Quantifier	Function
+.	Matches any character
++	Modifies the preceding set to mean one or more times
+*	Modifies the preceding set to mean zero or more times
+?	Modifies the preceding set to mean zero or one time
+{n}	Modifies the preceding set to mean exactly n times
+{n,}	Modifies the preceding set to mean n or more times
+{n,m}	Modifies the preceding set to mean between n and m times
+Many quantifiers modify the character sets that precede them. For example, . means any character that appears exactly once, 
+but .* means any or no character. 
+Here's an example; look at the regex pattern carefully:
+
+$ printf "red\nrd\n"
+red
+rd
+$ printf "red\nrd\n" | awk -e '$0 ~ /^r.d/ {print}'
+red
+$ printf "red\nrd\n" | awk -e '$0 ~ /^r.*d/ {print}'
+red
+rd
+Similarly, numbers in braces specify the number of times something occurs. To find records in which an e character occurs exactly twice:
+
+$ awk -e '$2 ~ /e{2}/ {print $0}' colours.txt
+apple      green  8
+
+Grouped matches
+
+Quantifier	Function
+(red)		Parentheses indicate that the enclosed letters must appear contiguously
+|		Means or in the context of a grouped match
+For instance, the pattern (red) matches the word red and ordered but not any word that contains all three of those letters in
+another order (such as the word order).
+
+

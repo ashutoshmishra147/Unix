@@ -1,0 +1,58 @@
+Examples:
+
+Assume the below initial contents of file1.txt for the following examples
+
+01 Priya
+04 Shreya
+03 Tuhina
+02 Tushar
+
+Sort with default ordering:
+
+$ sort file1.txt
+01 Priya
+02 Tushar
+03Tuhina
+04 Shreya
+In this example, the sorting is first performed using the first character. Since this is the same for all lines,
+ the sorting then proceeds to the second character. Since the second character is unique for each line, the sorting ends there.
+
+Sort in reverse ordering:
+
+$ sort -r file1.txt
+04 Shreya
+03Tuhina
+02 Tushar
+01 Priya
+In this example, the sorting is done similar to the above example, but the result is in the reverse order.
+
+Sort by the second field:
+
+$ sort -k 2 file1.txt
+01 Priya
+04Shreya
+03Tuhina
+02 Tushar
+Now assume the original file2.txt is as below
+
+01 Priya
+01 Pooja
+01 Priya
+01 Pari
+
+Sort with default ordering
+
+$ sort file2.txt
+01 Pari
+01 Pooja
+01Priya
+01Priya
+Sort suppressing repeated lines
+
+$ sort -u file2.txt
+01 Pari
+01 Pooja
+01Priya
+Conclusion
+
+The Sort command in Unix is a filter command that sorts the input text and prints the result to stdout. 

@@ -1,0 +1,157 @@
+Crontab Options
+To Install or update job in crontab, use -e option:
+
+$ crontab -e
+
+
+To List Crontab entries, use -l option:
+
+$ crontab -l
+
+
+To Deinstall job from crontab, use -r option:
+
+$ crontab -r
+
+
+To Confirm Deinstall of job from crontab, use -i option:
+
+$ crontab -i -r
+
+
+To add SELINUX security to crontab file, use -s option:
+
+$ crontab -s
+
+
+To edit other user crontab, user -u option and specify username:
+
+$ crontab -u username -e
+
+
+To List other user crontab entries:
+
+$ crontab -u username -l
+
+
+EXAMPLES
+To run /usr/bin/sample.sh at 12.59 every day and supress the output
+
+59 12 * * * simon /usr/bin/sample.sh > /dev/null 2>&1
+
+
+To run sample.sh everyday at 9pm (21:00)
+
+0 21 * * * sample.sh 1>/dev/null 2>&1
+
+
+To run sample.sh every Tuesday to Saturday at 1am (01:00)
+
+0 1 * * 2-7 sample.sh 1>/dev/null 2>&1
+
+
+To run sample.sh at 07:30, 09:30 13:30 and 15:30
+
+30 07,09,13,15 * * * sample.sh
+
+
+To run sample.sh at 07:30, 09:30 13:30 and 15:30
+
+30 07,09,13,15 * * * sample.sh
+
+
+To run sample.sh at 2am daily.
+
+0 2 * * *  sample.sh ( This is widely used in cases of backup of files/databases etc on daily basis. )
+
+
+To run sample.sh twice a day. say 5am and 5pm
+
+0 5,17 * * * sample.sh
+
+
+To run sample.sh every minutes.
+
+* * * * * sample.sh
+
+
+To run sample.sh every Sunday at 5 PM.
+
+0 17 * * sun  sample.sh
+
+
+To run sample.sh every 10 minutes.
+
+*/10 * * * * sample.sh
+
+
+To run sample.sh on selected months.
+
+* * * jan,may,aug *  sample.sh
+
+
+To run sample.sh selected days.
+
+0 17 * * sun,fri  sample.sh
+
+
+To run sample.sh first sunday of every month.
+
+0 2 * * sun  [ $(date +%d) -le 07 ] && sample.sh
+
+
+To run sample.sh every four hours.
+
+0 */4 * * * sample.sh
+
+
+To run sample.sh every Sunday and Monday.
+
+0 4,17 * * sun,mon sample.sh
+
+
+To run sample.sh every 30 Seconds.
+
+* * * * * sample.sh
+* * * * *  sleep 30; sample.sh
+
+
+To run multiple jobs using single cron.
+
+* * * * * sample1.sh; sample2.sh
+
+
+To run sample.sh on yearly ( @yearly ).
+
+@yearly sample.sh
+
+
+To run sample.sh on monthly ( @monthly ).
+
+@monthly sample.sh
+
+
+To run sample.sh on Weekly ( @weekly ).
+
+@weekly sample.sh
+
+
+To run sample.sh on daily ( @daily ).
+
+@daily sample.sh
+
+
+To run sample.sh on hourly ( @hourly ).
+
+@hourly sample.sh
+
+
+To run sample.sh on system reboot ( @reboot ).
+
+@reboot sample.sh
+
+
+
+
+0,15,30,45 * * * * cd ~/downloads/unixdata/practice && . greet.sh
+

@@ -1,0 +1,265 @@
+Let us create a file marks.txt which contains the serial number, name of the student,
+ subject name, and number of marks obtained.
+
+1)  Amit    Physics  80
+2)  Rahul   Maths    90
+3)  Shyam   Biology  87
+4)  Kedar   English  85
+5)  Hari    History  89
+Let us now display the file contents with header by using AWK script.
+
+Example
+
+ $ awk 'BEGIN{printf "SrNo\tName\tSub\tMarks\n"} {print}' marks.txt
+When this code is executed, it produces the following result −
+
+Output
+
+SrNo Name Sub Marks
+1) Amit Physics 80
+2) Rahul Maths 90
+3) Shyam Biology 87
+4) Kedar English 85
+5) Hari History 89
+
+At the start, AWK prints the header from the BEGIN block.
+Then in the body block, it reads a line from a file and executes AWK's print command
+ which just prints the contents on the standard output stream. 
+ This process repeats until file reaches the end.
+ 
+ 
+ AWK Command Line
+We can specify an AWK command within single quotes at command line as shown −
+
+awk [options] file ...
+Example
+
+Consider a text file marks.txt with the following content −
+
+1) Amit     Physics    80
+2) Rahul    Maths      90
+3) Shyam    Biology    87
+4) Kedar    English    85
+5) Hari     History    89
+Let us display the complete content of the file using AWK as follows −
+
+Example
+
+ $ awk '{print}' marks.txt 
+On executing this code, you get the following result −
+
+Output
+
+1) Amit     Physics    80
+2) Rahul    Maths      90
+3) Shyam    Biology    87
+4) Kedar    English    85
+5) Hari     History    89
+AWK Program File
+We can provide AWK commands in a script file as shown −
+
+awk [options] -f file ....
+First, create a text file command.awk containing the AWK command as shown below −
+
+{print}
+Now we can instruct the AWK to read commands from the text file and perform the action.
+ Here, we achieve the same result as shown in the above example.
+
+Example
+
+ $ awk -f command.awk marks.txt
+On executing this code, you get the following result −
+
+Output
+
+1) Amit  Physics 80
+2) Rahul Maths   90
+3) Shyam Biology 87
+4) Kedar English 85
+5) Hari  History 89
+AWK Standard Options
+AWK supports the following standard options which can be provided from the command line.
+
+The -v option
+
+This option assigns a value to a variable. It allows assignment before the program 
+execution. The following example describes the usage of the -v option.
+
+Example
+
+ $ awk -v name=Jerry 'BEGIN{printf "Name = %s\n", name}'
+On executing this code, you get the following result −
+
+Output
+
+Name = Jerry
+
+The --dump-variables[=file] option
+
+It prints a sorted list of global variables and their final values to file. 
+The default file is awkvars.out.
+
+Example
+
+ $ awk --dump-variables ''
+
+ $ cat awkvars.out 
+On executing the above code, you get the following result −
+
+Output
+
+ARGC: 1
+ARGIND: 0
+ARGV: array, 1 elements
+BINMODE: 0
+CONVFMT: "%.6g"
+ERRNO: ""
+FIELDWIDTHS: ""
+FILENAME: ""
+FNR: 0
+FPAT: "[^[:space:]]+"
+FS: " "
+IGNORECASE: 0
+LINT: 0
+NF: 0
+NR: 0
+OFMT: "%.6g"
+OFS: " "
+ORS: "\n"
+RLENGTH: 0
+RS: "\n"
+RSTART: 0
+RT: ""
+SUBSEP: "\034"
+TEXTDOMAIN: "messages"
+
+The --help option
+
+This option prints the help message on standard output.
+
+Example
+
+ $ awk --help
+On executing this code, you get the following result −
+
+Output
+
+Usage: awk [POSIX or GNU style options] -f progfile [--] file ...
+Usage: awk [POSIX or GNU style options] [--] 'program' file ...
+POSIX options : GNU long options: (standard)
+   -f progfile                --file=progfile
+   -F fs                      --field-separator=fs
+   -v var=val                 --assign=var=val
+Short options : GNU long options: (extensions)
+   -b                         --characters-as-bytes
+   -c                         --traditional
+   -C                         --copyright
+   -d[file]                   --dump-variables[=file]
+   -e 'program-text'          --source='program-text'
+   -E file                    --exec=file
+   -g                         --gen-pot
+   -h                         --help
+   -L [fatal]                 --lint[=fatal]
+   -n                         --non-decimal-data
+   -N                         --use-lc-numeric
+   -O                         --optimize
+   -p[file]                   --profile[=file]
+   -P                         --posix
+   -r                         --re-interval
+   -S                         --sandbox
+   -t                         --lint-old
+   -V                         --version
+
+
+The --lint[=fatal] option
+
+This option enables checking of non-portable or dubious constructs. 
+When an argument fatal is provided, it treats warning messages as errors. 
+The following example demonstrates this −
+
+Example
+
+ $ awk --lint '' /bin/ls
+On executing this code, you get the following result −
+
+Output
+
+awk: cmd. line:1: warning: empty program text on command line
+awk: cmd. line:1: warning: source file does not end in newline
+awk: warning: no program text at all!
+
+
+
+The --posix option
+
+This option turns on strict POSIX compatibility, in which all common 
+and gawk-specific extensions are disabled.
+
+The --profile[=file] option
+
+This option generates a pretty-printed version of the program in file. 
+Default file is awkprof.out. Below simple example illustrates this −
+
+Example
+
+ $ awk --profile 'BEGIN{printf"---|Header|--\n"} {print} 
+END{printf"---|Footer|---\n"}' marks.txt > /dev/null 
+ $ cat awkprof.out
+On executing this code, you get the following result −
+
+Output
+
+# gawk profile, created Sun Oct 26 19:50:48 2014
+
+   # BEGIN block(s)
+
+   BEGIN {
+      printf "---|Header|--\n"
+   }
+
+   # Rule(s) {
+      print $0
+   }
+
+   # END block(s)
+
+   END {
+      printf "---|Footer|---\n"
+   }
+The --traditional option
+
+This option disables all gawk-specific extensions.
+
+The --version option
+
+This option displays the version information of the AWK program.
+
+Example
+
+ $ awk --version
+When this code is executed, it produces the following result −
+
+Output
+
+GNU Awk 4.0.1
+Copyright (C) 1989, 1991-2012 Free Software Foundation.
+
+
+
+echo -e "knife\n know\n fun\n fin\n fan\n nine" | awk '/n$/'
+
+
+echo -e "Call\n Tall\n Ball" | awk '/[CT]all/'
+
+
+echo -e "ca\n cat\n catt" | awk '/cat*/'
+
+
+
+awk 'BEGIN {
+   	num = 12; 
+	if (num % 2 == 0) 
+		printf "%d is even number.\n", num; 
+      	else 
+		printf "%d is odd number.\n", num 
+	}'
